@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-ext.dockerImageName = 'python3action'
+ext.dockerImageName = 'python3action-custom-port'
 apply from: '../../gradle/docker.gradle'
