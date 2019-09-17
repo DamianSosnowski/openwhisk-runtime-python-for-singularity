@@ -16,10 +16,10 @@
 #
 
 # Dockerfile for python AI actions, overrides and extends ActionRunner from actionProxy
-FROM tensorflow/tensorflow:1.11.0-py3
+FROM tensorflow/tensorflow:1.11.0-gpu-py3
 
-ENV FLASK_PROXY_PORT 8080
 ENV PYTHONIOENCODING "UTF-8"
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
         gcc \
@@ -27,7 +27,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
         libxslt-dev \
         libxml2-dev \
         libffi-dev \
+	libsm6 \
         libssl-dev \
+	libxext6 \
+	python3-tk \
         zip \
         unzip \
         vim \
@@ -36,8 +39,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 RUN apt-cache search linux-headers-generic
 
 # PyTorch
-RUN pip3 install http://download.pytorch.org/whl/cpu/torch-0.4.1-cp35-cp35m-linux_x86_64.whl \
-    && pip3 install torchvision==0.2.1
+# RUN pip3 install http://download.pytorch.org/whl/cpu/torch-0.4.1-cp35-cp35m-linux_x86_64.whl \
+#    && pip3 install torchvision==0.2.1
 # Caffe
 # RUN apt-get update && apt-get upgrade -y \
 #     && apt-get install -y \
@@ -54,8 +57,11 @@ RUN pip3 install --upgrade pip six && pip3 install --no-cache-dir -r requirement
 
 RUN mkdir -p /actionProxy
 ADD https://raw.githubusercontent.com/apache/incubator-openwhisk-runtime-docker/dockerskeleton%401.3.3/core/actionProxy/actionproxy.py /actionProxy/actionproxy.py
+RUN chmod 0644 /actionProxy/actionproxy.py
 
 RUN mkdir -p /pythonAction
 COPY pythonrunner.py /pythonAction/pythonrunner.py
+
+
 
 CMD ["/bin/bash", "-c", "cd /pythonAction && python -u pythonrunner.py"]

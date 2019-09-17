@@ -41,8 +41,6 @@ RUN pip install \
     virtualenv==16.0.0 \
     twisted==18.7.0
 
-ENV FLASK_PROXY_PORT 8080
-
 RUN mkdir -p /pythonAction
 ADD pythonrunner.py /pythonAction/
 RUN rm -rf /action

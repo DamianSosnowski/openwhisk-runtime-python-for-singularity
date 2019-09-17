@@ -1,0 +1,11 @@
+Bootstrap: docker
+Registry: http://localhost:5000/
+Namespace:
+From: python3aiaction-custom-port:latest
+Includecmd: yes
+
+%startscript
+    cd /pythonAction
+    config_file="/port.conf"
+    read port < "$config_file"
+    FLASK_PROXY_PORT="$port" python3 -u pythonrunner.py 1>>/tmp/stdout.txt 2>>/tmp/stderr.txt
